@@ -1,4 +1,7 @@
 module BioPortal
+  
+  require 'bioportal/engine' if defined?(Rails)
+  
   module Acts
     def self.included(mod)
       mod.extend(ClassMethods)
@@ -415,4 +418,7 @@ module BioPortal
   end
     
 end
+
+ActionView::Base.send(:include, BioPortalHelper)
+ActiveRecord::Base.send(:include,BioPortal::Acts)
 
