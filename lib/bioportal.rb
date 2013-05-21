@@ -419,6 +419,5 @@ module BioPortal
     
 end
 
-ActionView::Base.send(:include, BioPortalHelper)
 ActiveRecord::Base.send(:include,BioPortal::Acts)
 
