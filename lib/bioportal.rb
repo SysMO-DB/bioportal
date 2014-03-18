@@ -209,7 +209,7 @@ module BioPortal
       options.keys.each{|key| ontologies_url += "#{key.to_s}=#{URI.encode(options[key].to_s)}&"}
       ontologies_url=ontologies_url[0..-2] #chop of trailing &
       uri=bioportal_base_rest_url+ontologies_url
-      
+
       parser = XML::Parser.io(open(uri))
       doc = parser.parse
 

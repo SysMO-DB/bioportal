@@ -1,20 +1,25 @@
-require 'test/unit'
-require 'bioportal'
+require_relative 'test_helper'
 
 class BioportalTest < Test::Unit::TestCase
   
   include BioPortal::RestAPI
+
+  def setup
+    @options={:apikey=>read_bioportal_api_key}
+  end
   
   def test_search
-    res,pages = search "Escherichia coli",:page_size=>10
+    @options[:page_size]=10
+    res,pages = search "Escherichia coli",@options
     assert !res.empty?
     assert pages>50
     assert_equal 10,res.size
-    assert_not_nil(res.find{|r| r[:ontology_id]=="1132"})
+    assert_not_nil(res.find{|r| r[:ontology_id]=="1526"})
   end
 
   def test_get_concept
-    concept = get_concept "38802","NCBITaxon:4932",{:light=>true}
+    @options[:light]=true
+    concept = get_concept "38802","NCBITaxon:4932",@options
     assert_not_nil concept, "concept returned should not be nil"
     assert_equal "Saccharomyces cerevisiae",concept[:label]
 
@@ -32,7 +37,7 @@ class BioportalTest < Test::Unit::TestCase
   end
 
   def test_get_ontology_versions
-    ontologies = get_ontology_versions
+    ontologies = get_ontology_versions @options
     assert_not_nil ontologies
     assert !ontologies.empty?
     assert_not_nil ontologies.first[:id]
@@ -49,7 +54,8 @@ class BioportalTest < Test::Unit::TestCase
   end
 
   def test_get_concepts_for_version_id
-    concepts,pages = get_concepts_for_ontology_version_id("38802",:pagesize=>"10")
+    @options[:pagesize]="10"
+    concepts,pages = get_concepts_for_ontology_version_id("38802",@options)
     assert_not_nil concepts,"concepts should not be nil"
     assert !concepts.empty?,"concepts should not be empty"
     assert_not_nil concepts.first[:label],"there should be the label set on the first concept"
@@ -59,7 +65,7 @@ class BioportalTest < Test::Unit::TestCase
   end
 
   def test_get_ontology_details
-    ontology = get_ontology_details "38802"
+    ontology = get_ontology_details "38802",@options
     assert_not_nil ontology
     assert_equal "38802",ontology[:id]
     assert_equal "1132",ontology[:ontology_id]
@@ -76,12 +82,6 @@ class BioportalTest < Test::Unit::TestCase
     assert_not_nil ontology[:format],"format should be set"    
     assert_not_nil ontology[:is_view],"is_view should be set"
   end
-  #
-  #  def test_get_concepts_for_virtual_ontology_id
-  #    concepts = get_concepts_for_virtual_ontology_id "1104",:limit=>"10"
-  #    assert_not_nil concepts
-  #    #assert !concepts.blank?
-  #    #assert_equal 10,concepts.size
-  #  end
+
   
 end
