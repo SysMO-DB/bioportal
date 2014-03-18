@@ -9,7 +9,7 @@ module BioPortal
 
     module ClassMethods
       def linked_to_bioportal(options = {}, &extension)
-        options[:base_url]||="http://rest.bioontology.org/bioportal"
+        options[:base_url]||="http://data.bioontology.org"
         
         has_one :bioportal_concept,:as=>:conceptable,:dependent=>:destroy
         before_save :save_changed_concept
@@ -279,7 +279,7 @@ module BioPortal
 
     private
     
-    DEFAULT_REST_URL = "http://rest.bioontology.org/bioportal"
+    DEFAULT_REST_URL = "http://data.bioontology.org"
 
     def bioportal_base_rest_url
       DEFAULT_REST_URL
