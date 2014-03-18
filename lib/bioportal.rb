@@ -1,3 +1,4 @@
+require 'pp'
 module BioPortal
   
   require 'bioportal/engine' if defined?(Rails)
@@ -172,32 +173,29 @@ module BioPortal
     # * the total number of pages    
     def search query,options={}
       options[:pagesize] ||= 10
-      options[:pagenum] ||= 0
+      options[:page] ||= 1
       
-      search_url="/search/%QUERY%?"
+      search_url="/search?q=%QUERY%&"
       options.keys.each {|key| search_url+="#{key.to_s}=#{URI.encode(options[key].to_s)}&"}
       search_url=search_url[0..-2] #chop of trailing &
       
       search_url=search_url.gsub("%QUERY%",URI.encode(query))
       full_search_path=bioportal_base_rest_url+search_url
-      parser = XML::Parser.io(open(full_search_path))
-      doc = parser.parse
 
-      results = error_check doc
 
-      unless results.nil?
-        return results
+      content = open(full_search_path).read
+
+      json = JSON.parse(content)
+
+      results = json["collection"].collect do |item|
+        res = {}
+        res[:ontology_link]=item["links"]["ontology"]
+        res[:class_link]=item["links"]["self"]
+        res[:preferred_label]=item["prefLabel"]
+        res[:synonyms]=item["synonym"]
+        res
       end
-
-      results = []
-      doc.find("/*/data/page/contents/searchResultList/searchBean").each{ |element|
-        results << parse_search_result(element)
-      }
-
-      pages = 1
-      doc.find("/*/data/page").each{|element|
-        pages = element.first.find(element.path + "/numPages").first.content
-      }
+      pages = json["pageCount"]
 
       return results.uniq,pages.to_i
 

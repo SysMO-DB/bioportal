@@ -1,4 +1,6 @@
 require_relative 'test_helper'
+require 'pp'
+
 
 class BioportalTest < Test::Unit::TestCase
   
@@ -9,12 +11,26 @@ class BioportalTest < Test::Unit::TestCase
   end
   
   def test_search
-    @options[:page_size]=10
+    @options[:pagesize]=10
     res,pages = search "Escherichia coli",@options
+
     assert !res.empty?
     assert pages>50
     assert_equal 10,res.size
-    assert_not_nil(res.find{|r| r[:ontology_id]=="1526"})
+
+    assert_not_nil(res.find{|r| r[:ontology_link]=="http://data.bioontology.org/ontologies/MESH"})
+  end
+
+  def test_search_specific_ontologies
+    @options[:pagesize]=150
+    @options[:ontologies]="NCBITAXON"
+    res,pages = search "cat",@options
+
+    assert !res.empty?
+    assert res.size>50
+    assert_equal 1,pages
+
+    assert_empty(res.select{|r| r[:ontology_link]!="http://data.bioontology.org/ontologies/NCBITAXON"})
   end
 
   def test_get_concept
