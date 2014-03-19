@@ -11,7 +11,6 @@ GEM
     activeresource (2.3.17)
       activesupport (= 2.3.17)
     activesupport (2.3.17)
-    libxml-ruby (2.7.0)
     rack (1.1.6)
     rails (2.3.17)
       actionmailer (= 2.3.17)
@@ -27,6 +26,5 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
-  libxml-ruby
   rails (= 2.3.17)
   test-unit
