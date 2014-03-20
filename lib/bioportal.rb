@@ -18,7 +18,7 @@ module BioPortal
 
         self.bioportal_base_rest_url=options[:base_url]
         self.bioportal_api_key=options[:apikey]
-        
+
 
         extend BioPortal::Acts::SingletonMethods
         include BioPortal::Acts::InstanceMethods        
@@ -43,12 +43,19 @@ module BioPortal
         end
       end
 
-      def ontology options={}
-        options[:apikey] ||= self.bioportal_api_key unless self.bioportal_api_key.nil?
-
-        return nil if self.bioportal_concept.nil?
-        return self.bioportal_concept.get_ontology options
+      def ncbi_uri
+        concept_uri
       end
+
+      def ncbi_id
+        unless ncbi_uri.nil?
+          id = ncbi_uri.split("/").last.split("_").last
+          id.to_i
+        else
+          nil
+        end
+      end
+
 
       def ontology_id
         return nil if self.bioportal_concept.nil?
@@ -162,50 +169,6 @@ module BioPortal
     def bioportal_base_rest_url
       DEFAULT_REST_URL
     end
-
-    def error_check(doc)
-      response = nil
-      error={}
-      begin
-        doc.elements.each("org.ncbo.stanford.bean.response.ErrorStatusBean"){ |element|
-          error[:error] = true
-          error[:shortMessage] = element.elements["shortMessage"].get_text.value.strip
-          error[:longMessage] =element.elements["longMessage"].get_text.value.strip
-          response = error
-        }
-      rescue
-      end
-
-      return response
-    end
-
-    def parse_search_result element
-      search_item={}
-      search_item[:ontology_display_label]=element.first.find(element.path+"/ontologyDisplayLabel").first.content rescue nil
-      search_item[:ontology_version_id]=element.first.find(element.path+"/ontologyVersionId").first.content rescue nil
-      search_item[:ontology_id]=element.first.find(element.path+"/ontologyId").first.content rescue nil
-      search_item[:record_type]=element.first.find(element.path+"/recordType").first.content rescue nil
-      search_item[:concept_id]=element.first.find(element.path+"/conceptId").first.content rescue nil
-      search_item[:concept_id_short]=element.first.find(element.path+"/conceptIdShort").first.content rescue nil
-      search_item[:preferred_name]=element.first.find(element.path+"/preferredName").first.content rescue nil
-      search_item[:contents]=element.first.find(element.path+"/contents").first.content rescue nil
-      return search_item
-    end
-
-    def process_concepts_xml doc
-      doc.find("/*/data/classBean").each{ |element|
-        return process_concept_bean_xml(element)
-      }      
-    end
-
-    def parse_ontologies_xml doc
-      ontologies=[]
-      doc.find("/*/data/list/ontologyBean").each{ |element|
-        ontologies << parse_ontology_bean_xml(element)
-      }
-      return ontologies
-    end
-
 
   end
     
