@@ -1,25 +1,2 @@
-<%
-if concept_id
-  flash_vars="widget=true&ontology=#{ontology_id}&nodeid=#{URI.encode(concept_id)}&server=http://rest.bioontology.org/bioportal/"
-else
-  flash_vars="widget=true&ontology=#{ontology_id}&server=http://rest.bioontology.org/bioportal/"
-end
-%>
-<object classid="clsid:D27CDB6E-AE6D-11cf-96B8-444553540000"
-        id="FlexoViz" width="100%" height="100%"
-        codebase="https://fpdownload.macromedia.com/get/flashplayer/current/swflash.cab">
-  <param name="movie" value="https://keg.cs.uvic.ca/ncbo/flexviz/FlexoViz.swf" />
-  <param name="quality" value="high" />
-  <param name="bgcolor" value="#ffffff" />
-  <param name="allowScriptAccess" value="always" />
-  <embed src="https://keg.cs.uvic.ca/ncbo/flexviz/FlexoViz.swf" bgcolor="#ffffff"
-         width="100%" height="100%" name="FlexoViz" align="middle"
-         play="true"
-         loop="false"
-         quality="high"
-         allowScriptAccess="always"
-         type="application/x-shockwave-flash"
-         flashVars="<%= flash_vars -%>"
-         pluginspage="https://www.adobe.com/go/getflashplayer">
-  </embed>
-</object>
+
+<iframe id="bioportal_visualisation" frameborder="0" src="http://bioportal.bioontology.org/widgets/visualization?ontology=<%=ontology_id%>&class=<%=URI.escape(concept_id,":/")%>&apikey=<%=apikey%>"></iframe>
