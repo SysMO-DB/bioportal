@@ -5,6 +5,8 @@ class BioportalConcept < ActiveRecord::Base
 
   before_save :check_cached_concept
 
+  validates_uniqueness_of :concept_uri
+
   def get_concept options={}
     options[:refresh]||=false
     
