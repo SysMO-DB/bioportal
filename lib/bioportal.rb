@@ -44,12 +44,13 @@ module BioPortal
       end
 
       def ncbi_uri
-        concept_uri
+        return nil if ncbi_id.nil?
+        "http://purl.bioontology.org/ontology/NCBITAXON/#{ncbi_id}"
       end
 
       def ncbi_id
-        unless ncbi_uri.nil?
-          id = ncbi_uri.split("/").last.split("_").last
+        unless concept_uri.nil?
+          id = concept_uri.split("/").last.split("_").last
           id.to_i
         else
           nil

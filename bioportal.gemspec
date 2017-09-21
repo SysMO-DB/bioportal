@@ -1,6 +1,6 @@
 Gem::Specification.new do |s|
   s.name        = 'bioportal'
-  s.version     = '2.3'
+  s.version     = '3.0'
   s.date        = '2016-03-31'
   s.summary     = "Supports linking of Models within a RoR application to a Concept and Ontology within the BioPortal"
   s.authors     = ["Finn Bacall", "Stuart Owen","Quyen Nguyen"]
