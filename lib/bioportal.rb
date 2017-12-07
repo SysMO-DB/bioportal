@@ -59,13 +59,13 @@ module BioPortal
 
 
       def ontology_id
-        return nil if self.bioportal_concept.nil?
+        return nil if self.bioportal_concept.blank? || self.bioportal_concept.ontology_id.blank?
         return self.bioportal_concept.ontology_id
       end
 
 
       def concept_uri
-        return nil if self.bioportal_concept.nil?
+        return nil if self.bioportal_concept.nil? || self.bioportal_concept.concept_uri.blank?
         return self.bioportal_concept.concept_uri
       end
 
